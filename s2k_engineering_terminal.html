@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; media-src * blob: data:;">
     <title>MotorNews | S2000 Terminal OS</title>
     
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -498,9 +498,7 @@
                 <div class="w-3 h-3 bg-brand-accent transform -rotate-45"></div>
             </div>
             <div class="flex flex-wrap justify-center gap-8 font-mono text-[9px] uppercase tracking-[0.3em] text-white/40">
-                <a href="#" class="hover:text-white transition-colors">Termos de Uso</a>
-                <a href="#" class="hover:text-white transition-colors">Segurança DB</a>
-                <a href="#" class="hover:text-white transition-colors">Log de Sistema</a>
+                <span>Catálogo demonstrativo</span>
             </div>
             <p class="text-[9px] font-mono text-white/20 uppercase tracking-[0.2em] mt-8 text-center max-w-md leading-loose">
                 Este terminal interface é uma simulação avançada de engenharia automotiva conectada em nuvem.<br> Developed in 2026.
@@ -556,7 +554,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ==========================================
         // CONFIGURAÇÃO DO FIREBASE (SUAS CHAVES AQUI)
@@ -590,57 +588,33 @@
             }
 
             async initializeAuth() {
-                if(!this.auth) return;
+                if (!this.auth) return;
+                await this.auth.authStateReady();
+                if (this.auth.currentUser) return;
                 const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
                 if (token) await signInWithCustomToken(this.auth, token);
                 else await signInAnonymously(this.auth);
             }
 
             async authenticate(email, password, isLogin) {
+                if (!this.auth) return { success: false, msg: 'Autenticação indisponível.' };
                 try {
-                    // Verificamos antes se estamos em ambiente de Canvas para usar nossa própria coleção local de accounts
-                    if(typeof __app_id !== 'undefined') {
-                       const accountsRef = collection(this.db, 'artifacts', this.appId, 'public', 'data', 'accounts');
-                       const snapshot = await getDocs(accountsRef);
-                       let foundUser = null;
-                       let emailExists = false;
-
-                       snapshot.forEach(doc => {
-                           const data = doc.data();
-                           if (data.email === email) {
-                               emailExists = true;
-                               if (data.password === password) foundUser = data;
-                           }
-                       });
-
-                       if (isLogin) {
-                           if (foundUser) return { success: true, user: foundUser };
-                           return { success: false, msg: "Credenciais inválidas." };
-                       } else {
-                           if (emailExists) return { success: false, msg: "Email já em uso." };
-                           const newUser = { email: email, password: password, createdAt: new Date().toISOString() };
-                           await addDoc(accountsRef, newUser);
-                           return { success: true, user: newUser };
-                       }
-                    } else {
-                         // Fallback para Auth real do Firebase se rodando local
-                        let cred = isLogin 
-                            ? await signInWithEmailAndPassword(this.auth, email, password) 
-                            : await createUserWithEmailAndPassword(this.auth, email, password);
-                        return { success: true, user: cred.user };
-                    }
+                    const cred = isLogin
+                        ? await signInWithEmailAndPassword(this.auth, email, password)
+                        : await createUserWithEmailAndPassword(this.auth, email, password);
+                    return { success: true, user: cred.user };
                 } catch (e) { 
                     return { success: false, msg: this._translateError(e.code || e.message) }; 
                 }
             }
 
             async logout() {
-                if(typeof __app_id === 'undefined') await signOut(this.auth);
+                if (this.auth) await signOut(this.auth);
             }
 
             onAuthChange(callback) {
-                 if(typeof __app_id === 'undefined' && this.auth) {
-                     onAuthStateChanged(this.auth, callback);
+                 if (this.auth) {
+                     onAuthStateChanged(this.auth, user => callback(user?.email ? user : null));
                  }
             }
 
@@ -665,7 +639,7 @@
                 if(code.includes('invalid-credential') || code.includes('wrong-password')) return 'Chave de segurança ou e-mail inválidos.';
                 if(code.includes('user-not-found')) return 'Usuário inexistente.';
                 if(code.includes('weak-password')) return 'Nível de criptografia baixo (mín 6 caracteres).';
-                return `Erro de Sistema: ${code}`;
+                return 'Não foi possível autenticar. Verifique a conexão e tente novamente.';
             }
         }
 
@@ -843,8 +817,13 @@
                 this.els.btnCloseAuth.addEventListener('click', () => this.closeModal(this.els.modalAuth, this.els.authContainer));
                 this.els.btnCloseDash.addEventListener('click', () => this.closeModal(this.els.modalDash, this.els.dashContainer));
                 
-                this.els.btnSair.addEventListener('click', () => { 
-                    this.db.logout(); 
+                this.els.btnSair.addEventListener('click', async () => {
+                    try {
+                        await this.db.logout();
+                    } catch {
+                        this.showToast('Não foi possível sair. Tente novamente.', 'error');
+                        return;
+                    }
                     this.currentUser = null;
                     this.updateAuthUI(null);
                     this.closeModal(this.els.modalDash, this.els.dashContainer);
@@ -950,7 +929,7 @@
                     }, 1800);
                 });
 
-                // Escutar Auth State (se não for no Canvas)
+                // Escutar Auth State da conta
                 this.db.onAuthChange((user) => {
                     this.currentUser = user;
                     this.updateAuthUI(user);
@@ -959,8 +938,10 @@
                 // Smooth scroll para links de nav
                 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                     anchor.addEventListener('click', function (e) {
+                        const target = document.getElementById(this.hash.slice(1));
+                        if (!target) return;
                         e.preventDefault();
-                        document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+                        target.scrollIntoView({ behavior: 'smooth' });
                     });
                 });
             }
@@ -1101,8 +1082,12 @@
         // ==========================================
         const bootstrap = async () => {
             const db = new DatabaseService(); 
-            await db.initializeAuth();
             const app = new SystemInterface(db); 
+            try {
+                await db.initializeAuth();
+            } catch {
+                app.showToast('Conexão inicial indisponível. Você ainda pode navegar pelo catálogo.', 'info');
+            }
         };
 
         if (document.readyState === 'loading') {
