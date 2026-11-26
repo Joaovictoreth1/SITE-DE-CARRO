@@ -30,14 +30,14 @@ export default defineConfig({
   webServer: useEmulators
     ? {
         command:
-          "npm run build -- --mode test --outDir dist/cloud && npm run preview -- --mode test --outDir dist/cloud --host 127.0.0.1 --port 4174 --strictPort",
+          "npm run build -- --mode test --outDir test-results/build-cloud && npm run preview -- --mode test --outDir test-results/build-cloud --host 127.0.0.1 --port 4174 --strictPort",
         url: cloudUrl,
       }
     : process.env.MOTORNEWS_STATIC_URL
       ? undefined
       : {
           command:
-            "npm run build -- --mode test-static && npm run preview -- --host 127.0.0.1 --port 4173 --strictPort",
+            "npm run build -- --mode test-static --outDir test-results/build-static && npm run preview -- --outDir test-results/build-static --host 127.0.0.1 --port 4173 --strictPort",
           url: staticUrl,
         },
 });
