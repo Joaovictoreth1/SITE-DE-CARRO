@@ -37,6 +37,8 @@ O registro usa uma transação e um caminho fixo por UID. Cliques repetidos ou s
 
 O build rejeita configurações parciais ou malformadas. Com os quatro campos vazios, **Entrar** e o registro em nuvem não são oferecidos. Com o Firebase configurado, crie uma conta ou entre, abra **Engenharia** e selecione **Registrar nó FEV-01**. Monitore falhas e consumo no Console Firebase; exclusões de conta e de registro devem ser atendidas pelo administrador do projeto.
 
+A política de conteúdo não carrega scripts externos de autenticação. Se o projeto exigir reCAPTCHA Enterprise para login por e-mail/senha, valide uma política específica em homologação antes de publicar; essa configuração não é suportada pela política padrão.
+
 **Autorizações legadas:** o código antigo tinha um caminho que podia gravar senhas em texto puro na coleção `artifacts/{appId}/public/data/accounts`. Este build não lê, migra nem grava esses documentos. Antes de reutilizar o projeto anterior, audite acesso e existência de dados nessas coleções, restrinja as regras e trate redefinição de credenciais e remoção de dados conforme o resultado. Não importe senhas em texto puro.
 
 ## Verificação
