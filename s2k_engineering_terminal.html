@@ -277,7 +277,7 @@
             </div>
         </section>
 
-        <section id="models" class="grid grid-cols-1 lg:grid-cols-2 border-b border-white/10">
+        <section id="models" aria-label="Gerações do Honda S2000" class="grid grid-cols-1 lg:grid-cols-2 border-b border-white/10">
             
             <!-- AP1 Card -->
             <article class="group relative border-b lg:border-b-0 lg:border-r border-white/10 min-h-[70vh] flex flex-col justify-end p-8 lg:p-14 overflow-hidden bg-black">
@@ -297,7 +297,7 @@
                     <h3 class="font-heading text-7xl md:text-9xl text-white uppercase leading-[0.8] tracking-wide mb-6 text-outline group-hover:text-white group-hover:text-shadow-none">
                         AP1
                     </h3>
-                    <p class="text-[10px] text-white/60 leading-loose max-w-sm font-mono uppercase tracking-[0.2em] mb-8 h-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                    <p class="text-sm text-white/75 leading-relaxed max-w-sm mb-8">
                         O design original, focado na pureza em altas rotações. Suspensão traseira com geometria agressiva para resposta direcional instantânea.
                     </p>
                     
@@ -328,7 +328,7 @@
                     <h3 class="font-heading text-7xl md:text-9xl text-white uppercase leading-[0.8] tracking-wide mb-6 text-outline group-hover:text-white group-hover:text-shadow-none">
                         AP2
                     </h3>
-                    <p class="text-[10px] text-white/60 leading-loose max-w-sm font-mono uppercase tracking-[0.2em] mb-8 h-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                    <p class="text-sm text-white/75 leading-relaxed max-w-sm mb-8">
                         Geometria de suspensão revisada para estabilidade, rodas 17", e motor com maior deslocamento para torque em médias rotações.
                     </p>
                     
@@ -340,6 +340,64 @@
                     </div>
                 </div>
             </article>
+        </section>
+
+        <section id="comparacao" aria-labelledby="compare-title" class="border-b border-white/10 bg-[#050505] px-5 py-16 text-white lg:px-12">
+            <div class="mx-auto max-w-5xl space-y-6">
+                <header class="space-y-2">
+                    <h2 id="compare-title" class="font-heading text-4xl uppercase tracking-wide md:text-6xl">AP1 × AP2</h2>
+                    <p class="max-w-prose text-sm leading-relaxed text-white/75">
+                        Compare as fichas apresentadas nesta página. As especificações podem variar conforme o ano e o mercado.
+                    </p>
+                </header>
+                <div class="overflow-hidden rounded-lg border border-white/20">
+                    <table class="w-full table-fixed text-left text-sm">
+                        <caption class="bg-white/10 p-3 text-left font-semibold">Comparativo técnico</caption>
+                        <thead class="border-y border-white/20 bg-white/5">
+                            <tr>
+                                <th scope="col" class="p-3">Item</th>
+                                <th scope="col" class="p-3">AP1</th>
+                                <th scope="col" class="p-3">AP2</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/10">
+                            <tr>
+                                <th scope="row" class="p-3 font-medium">Período</th>
+                                <td class="p-3">1999–2003</td>
+                                <td class="p-3">2004–2009</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="p-3 font-medium">Motor</th>
+                                <td class="p-3">F20C<br>2,0 L</td>
+                                <td class="p-3">F22C1<br>2,2 L</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="p-3 font-medium">Limite de giro</th>
+                                <td class="p-3">9.000 rpm</td>
+                                <td class="p-3">8.200 rpm</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="p-3 font-medium">Peso em ordem de marcha</th>
+                                <td class="p-3">1.270 kg</td>
+                                <td class="p-3">1.295 kg</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <details class="rounded-lg border border-white/20 p-4">
+                    <summary class="cursor-pointer font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4">Como ler as especificações?</summary>
+                    <dl class="mt-3 grid gap-4 text-sm text-white/80 sm:grid-cols-2">
+                        <div>
+                            <dt class="font-semibold text-white">Cilindrada</dt>
+                            <dd>Volume que os pistões deslocam do ponto mais alto ao mais baixo em todos os cilindros.</dd>
+                        </div>
+                        <div>
+                            <dt class="font-semibold text-white">Limite de giro</dt>
+                            <dd>Rotação indicada pelo início da faixa vermelha do conta-giros; a unidade é rotações por minuto (rpm).</dd>
+                        </div>
+                    </dl>
+                </details>
+            </div>
         </section>
 
         <section id="engineering" class="grid grid-cols-1 lg:grid-cols-12 gap-0 border-b border-white/10 relative">
