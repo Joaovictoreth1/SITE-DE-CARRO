@@ -41,6 +41,7 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Test the production container in Chromium
         run: |
+          docker build --check .
           docker build -t motornews .
           docker run --detach --name motornews -p 127.0.0.1:8080:8080 \
             --read-only --tmpfs /tmp --cap-drop=ALL --security-opt=no-new-privileges motornews

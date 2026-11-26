@@ -67,7 +67,9 @@ test("creates an operator and handles concurrent registration on the same accoun
         : second;
     await createdPage.setViewportSize({ width: 1280, height: 900 });
     await createdPage.emulateMedia({ reducedMotion: "reduce" });
-    await createdPage.locator("#engineering").evaluate((section) => section.scrollIntoView());
+    await createdPage
+      .locator("#engineering")
+      .evaluate((section) => section.scrollIntoView());
     await testInfo.attach("registro-confirmado", {
       body: await createdPage.screenshot(),
       contentType: "image/png",
