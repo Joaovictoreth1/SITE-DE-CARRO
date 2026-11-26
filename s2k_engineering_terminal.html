@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline' 'unsafe-eval'; media-src * blob: data:;">
     <title>MotorNews | S2000 Terminal OS</title>
     
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -89,6 +89,7 @@
         .media-container { position: absolute; inset: 0; z-index: 0; overflow: hidden; background-color: #050505; }
         .media-container video, .media-container img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; transition: transform 1.5s cubic-bezier(0.16, 1, 0.3, 1), filter 1s ease; filter: grayscale(100%) brightness(0.4) contrast(1.3); }
         .media-container img { z-index: 1; } .media-container video { z-index: 2; }
+        .media-container video:not([data-playing]) { visibility: hidden; }
         .group:hover .media-container video, .group:hover .media-container img { transform: scale(1.05); filter: grayscale(0%) brightness(0.8) contrast(1.1); }
 
         /* Hover Sweep Button Effect */
@@ -221,7 +222,7 @@
     <section id="hero" class="relative w-full min-h-[100vh] flex flex-col items-center justify-center border-b border-white/10 pt-20 overflow-hidden group">
         <div class="media-container">
             <img src="https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?q=80&w=2000&auto=format&fit=crop" alt="Honda S2000 Background" loading="lazy">
-            <video autoplay muted loop playsinline crossorigin="anonymous" id="hero-vid">
+            <video data-catalog-video aria-hidden="true" preload="none" muted loop playsinline crossorigin="anonymous" id="hero-vid">
                 <source src="https://s3.amazonaws.com/webflow-prod-assets/689c67bcc7193a0725e2aecf/699ebca3f1e8e212bc6b59c5_new-home-video-reverse.mp4" type="video/mp4">
             </video>
             <div class="absolute inset-0 bg-gradient-to-t from-[#020202] via-black/50 to-transparent z-10"></div>
@@ -260,6 +261,18 @@
     </div>
 
     <main class="flex-grow w-full max-w-[1600px] mx-auto border-x border-white/10 bg-[#020202] relative">
+        <div class="border-b border-white/10 bg-[#080808] px-5 py-4 text-white">
+            <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3">
+                <p class="max-w-prose text-sm text-white/75">
+                    O catálogo começa com imagens estáticas. Os vídeos são opcionais e param fora da área visível ou ao trocar de aba.
+                </p>
+                <button type="button" id="catalog-video-toggle" aria-pressed="false" hidden
+                        class="min-h-11 rounded border border-white/40 px-4 text-sm font-semibold focus-visible:outline focus-visible:outline-2">
+                    Vídeos de fundo
+                </button>
+                <p id="catalog-video-status" role="status" class="basis-full text-sm text-white/80 empty:hidden"></p>
+            </div>
+        </div>
         
         <section id="history" class="border-b border-white/10 py-24 lg:py-32 px-6 lg:px-12 relative overflow-hidden">
             <div class="absolute top-0 right-0 p-24 opacity-5 pointer-events-none font-heading text-[20rem] leading-none text-white select-none">99</div>
@@ -277,13 +290,13 @@
             </div>
         </section>
 
-        <section id="models" class="grid grid-cols-1 lg:grid-cols-2 border-b border-white/10">
+        <section id="models" aria-label="Gerações do Honda S2000" class="grid grid-cols-1 lg:grid-cols-2 border-b border-white/10">
             
             <!-- AP1 Card -->
             <article class="group relative border-b lg:border-b-0 lg:border-r border-white/10 min-h-[70vh] flex flex-col justify-end p-8 lg:p-14 overflow-hidden bg-black">
                 <div class="media-container opacity-50 group-hover:opacity-100 transition-opacity duration-700">
                     <img src="https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?q=80&w=1000&auto=format&fit=crop" alt="Honda S2000 AP1" loading="lazy">
-                    <video autoplay muted loop playsinline crossorigin="anonymous" class="vid-auto">
+                    <video data-catalog-video aria-hidden="true" preload="none" muted loop playsinline crossorigin="anonymous" class="vid-auto">
                         <source src="https://s3.amazonaws.com/webflow-prod-assets/689c67bcc7193a0725e2aecf/69946f2c90e935d82e71cb71_Block-1-boomer.mp4" type="video/mp4">
                     </video>
                     <div class="absolute inset-0 bg-gradient-to-t from-[#020202] via-[#020202]/80 to-transparent z-10"></div>
@@ -297,7 +310,7 @@
                     <h3 class="font-heading text-7xl md:text-9xl text-white uppercase leading-[0.8] tracking-wide mb-6 text-outline group-hover:text-white group-hover:text-shadow-none">
                         AP1
                     </h3>
-                    <p class="text-[10px] text-white/60 leading-loose max-w-sm font-mono uppercase tracking-[0.2em] mb-8 h-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                    <p class="text-sm text-white/75 leading-relaxed max-w-sm mb-8">
                         O design original, focado na pureza em altas rotações. Suspensão traseira com geometria agressiva para resposta direcional instantânea.
                     </p>
                     
@@ -314,7 +327,7 @@
             <article class="group relative min-h-[70vh] flex flex-col justify-end p-8 lg:p-14 overflow-hidden bg-black">
                 <div class="media-container opacity-50 group-hover:opacity-100 transition-opacity duration-700">
                     <img src="https://images.unsplash.com/photo-1544829099-b9a0c07fad1a?q=80&w=1000&auto=format&fit=crop" alt="Honda S2000 AP2" loading="lazy">
-                    <video autoplay muted loop playsinline crossorigin="anonymous" class="vid-auto">
+                    <video data-catalog-video aria-hidden="true" preload="none" muted loop playsinline crossorigin="anonymous" class="vid-auto">
                         <source src="https://s3.amazonaws.com/webflow-prod-assets/689c67bcc7193a0725e2aecf/68b6bb5347fbf42da4e271dc_longbow-hover-video.mp4" type="video/mp4">
                     </video>
                     <div class="absolute inset-0 bg-gradient-to-t from-[#020202] via-[#020202]/80 to-transparent z-10"></div>
@@ -328,7 +341,7 @@
                     <h3 class="font-heading text-7xl md:text-9xl text-white uppercase leading-[0.8] tracking-wide mb-6 text-outline group-hover:text-white group-hover:text-shadow-none">
                         AP2
                     </h3>
-                    <p class="text-[10px] text-white/60 leading-loose max-w-sm font-mono uppercase tracking-[0.2em] mb-8 h-20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                    <p class="text-sm text-white/75 leading-relaxed max-w-sm mb-8">
                         Geometria de suspensão revisada para estabilidade, rodas 17", e motor com maior deslocamento para torque em médias rotações.
                     </p>
                     
@@ -340,6 +353,64 @@
                     </div>
                 </div>
             </article>
+        </section>
+
+        <section id="comparacao" aria-labelledby="compare-title" class="border-b border-white/10 bg-[#050505] px-5 py-16 text-white lg:px-12">
+            <div class="mx-auto max-w-5xl space-y-6">
+                <header class="space-y-2">
+                    <h2 id="compare-title" class="font-heading text-4xl uppercase tracking-wide md:text-6xl">AP1 × AP2</h2>
+                    <p class="max-w-prose text-sm leading-relaxed text-white/75">
+                        Compare as fichas apresentadas nesta página. As especificações podem variar conforme o ano e o mercado.
+                    </p>
+                </header>
+                <div class="overflow-hidden rounded-lg border border-white/20">
+                    <table class="w-full table-fixed text-left text-sm">
+                        <caption class="bg-white/10 p-3 text-left font-semibold">Comparativo técnico</caption>
+                        <thead class="border-y border-white/20 bg-white/5">
+                            <tr>
+                                <th scope="col" class="p-3">Item</th>
+                                <th scope="col" class="p-3">AP1</th>
+                                <th scope="col" class="p-3">AP2</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/10">
+                            <tr>
+                                <th scope="row" class="p-3 font-medium">Período</th>
+                                <td class="p-3">1999–2003</td>
+                                <td class="p-3">2004–2009</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="p-3 font-medium">Motor</th>
+                                <td class="p-3">F20C<br>2,0 L</td>
+                                <td class="p-3">F22C1<br>2,2 L</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="p-3 font-medium">Limite de giro</th>
+                                <td class="p-3">9.000 rpm</td>
+                                <td class="p-3">8.200 rpm</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="p-3 font-medium">Peso em ordem de marcha</th>
+                                <td class="p-3">1.270 kg</td>
+                                <td class="p-3">1.295 kg</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <details class="rounded-lg border border-white/20 p-4">
+                    <summary class="cursor-pointer font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4">Como ler as especificações?</summary>
+                    <dl class="mt-3 grid gap-4 text-sm text-white/80 sm:grid-cols-2">
+                        <div>
+                            <dt class="font-semibold text-white">Cilindrada</dt>
+                            <dd>Volume que os pistões deslocam do ponto mais alto ao mais baixo em todos os cilindros.</dd>
+                        </div>
+                        <div>
+                            <dt class="font-semibold text-white">Limite de giro</dt>
+                            <dd>Rotação indicada pelo início da faixa vermelha do conta-giros; a unidade é rotações por minuto (rpm).</dd>
+                        </div>
+                    </dl>
+                </details>
+            </div>
         </section>
 
         <section id="engineering" class="grid grid-cols-1 lg:grid-cols-12 gap-0 border-b border-white/10 relative">
@@ -498,9 +569,7 @@
                 <div class="w-3 h-3 bg-brand-accent transform -rotate-45"></div>
             </div>
             <div class="flex flex-wrap justify-center gap-8 font-mono text-[9px] uppercase tracking-[0.3em] text-white/40">
-                <a href="#" class="hover:text-white transition-colors">Termos de Uso</a>
-                <a href="#" class="hover:text-white transition-colors">Segurança DB</a>
-                <a href="#" class="hover:text-white transition-colors">Log de Sistema</a>
+                <span>Catálogo demonstrativo</span>
             </div>
             <p class="text-[9px] font-mono text-white/20 uppercase tracking-[0.2em] mt-8 text-center max-w-md leading-loose">
                 Este terminal interface é uma simulação avançada de engenharia automotiva conectada em nuvem.<br> Developed in 2026.
@@ -553,10 +622,11 @@
     <!-- TOAST NOTIFICATIONS CONTAINER -->
     <div id="toast-container" class="fixed bottom-8 right-8 z-[300] flex flex-col gap-4 items-end pointer-events-none"></div>
 
+    <script type="module" src="catalog-media.mjs"></script>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, getDocs, serverTimestamp, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ==========================================
         // CONFIGURAÇÃO DO FIREBASE (SUAS CHAVES AQUI)
@@ -590,57 +660,33 @@
             }
 
             async initializeAuth() {
-                if(!this.auth) return;
+                if (!this.auth) return;
+                await this.auth.authStateReady();
+                if (this.auth.currentUser) return;
                 const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
                 if (token) await signInWithCustomToken(this.auth, token);
                 else await signInAnonymously(this.auth);
             }
 
             async authenticate(email, password, isLogin) {
+                if (!this.auth) return { success: false, msg: 'Autenticação indisponível.' };
                 try {
-                    // Verificamos antes se estamos em ambiente de Canvas para usar nossa própria coleção local de accounts
-                    if(typeof __app_id !== 'undefined') {
-                       const accountsRef = collection(this.db, 'artifacts', this.appId, 'public', 'data', 'accounts');
-                       const snapshot = await getDocs(accountsRef);
-                       let foundUser = null;
-                       let emailExists = false;
-
-                       snapshot.forEach(doc => {
-                           const data = doc.data();
-                           if (data.email === email) {
-                               emailExists = true;
-                               if (data.password === password) foundUser = data;
-                           }
-                       });
-
-                       if (isLogin) {
-                           if (foundUser) return { success: true, user: foundUser };
-                           return { success: false, msg: "Credenciais inválidas." };
-                       } else {
-                           if (emailExists) return { success: false, msg: "Email já em uso." };
-                           const newUser = { email: email, password: password, createdAt: new Date().toISOString() };
-                           await addDoc(accountsRef, newUser);
-                           return { success: true, user: newUser };
-                       }
-                    } else {
-                         // Fallback para Auth real do Firebase se rodando local
-                        let cred = isLogin 
-                            ? await signInWithEmailAndPassword(this.auth, email, password) 
-                            : await createUserWithEmailAndPassword(this.auth, email, password);
-                        return { success: true, user: cred.user };
-                    }
+                    const cred = isLogin
+                        ? await signInWithEmailAndPassword(this.auth, email, password)
+                        : await createUserWithEmailAndPassword(this.auth, email, password);
+                    return { success: true, user: cred.user };
                 } catch (e) { 
                     return { success: false, msg: this._translateError(e.code || e.message) }; 
                 }
             }
 
             async logout() {
-                if(typeof __app_id === 'undefined') await signOut(this.auth);
+                if (this.auth) await signOut(this.auth);
             }
 
             onAuthChange(callback) {
-                 if(typeof __app_id === 'undefined' && this.auth) {
-                     onAuthStateChanged(this.auth, callback);
+                 if (this.auth) {
+                     onAuthStateChanged(this.auth, user => callback(user?.email ? user : null));
                  }
             }
 
@@ -665,7 +711,7 @@
                 if(code.includes('invalid-credential') || code.includes('wrong-password')) return 'Chave de segurança ou e-mail inválidos.';
                 if(code.includes('user-not-found')) return 'Usuário inexistente.';
                 if(code.includes('weak-password')) return 'Nível de criptografia baixo (mín 6 caracteres).';
-                return `Erro de Sistema: ${code}`;
+                return 'Não foi possível autenticar. Verifique a conexão e tente novamente.';
             }
         }
 
@@ -684,7 +730,6 @@
                 this.cacheDOM();
                 this.bindEvents();
                 this.initVisualEffects();
-                this.forceVideoPlay();
             }
 
             cacheDOM() {
@@ -769,17 +814,6 @@
                 });
             }
 
-            forceVideoPlay() {
-               setTimeout(() => {
-                   document.querySelectorAll('video[autoplay]').forEach(vid => {
-                        vid.play().catch(e => console.log("[SYS] Autoplay aguardando interação."));
-                   });
-               }, 200);
-               document.body.addEventListener('click', () => {
-                   document.querySelectorAll('video[autoplay]').forEach(vid => { if(vid.paused) vid.play(); });
-               }, {once:true});
-            }
-
             // Sistema Avançado de Toasts
             showToast(msg, type = 'info') {
                 const container = document.getElementById('toast-container');
@@ -843,8 +877,13 @@
                 this.els.btnCloseAuth.addEventListener('click', () => this.closeModal(this.els.modalAuth, this.els.authContainer));
                 this.els.btnCloseDash.addEventListener('click', () => this.closeModal(this.els.modalDash, this.els.dashContainer));
                 
-                this.els.btnSair.addEventListener('click', () => { 
-                    this.db.logout(); 
+                this.els.btnSair.addEventListener('click', async () => {
+                    try {
+                        await this.db.logout();
+                    } catch {
+                        this.showToast('Não foi possível sair. Tente novamente.', 'error');
+                        return;
+                    }
                     this.currentUser = null;
                     this.updateAuthUI(null);
                     this.closeModal(this.els.modalDash, this.els.dashContainer);
@@ -950,7 +989,7 @@
                     }, 1800);
                 });
 
-                // Escutar Auth State (se não for no Canvas)
+                // Escutar Auth State da conta
                 this.db.onAuthChange((user) => {
                     this.currentUser = user;
                     this.updateAuthUI(user);
@@ -959,8 +998,10 @@
                 // Smooth scroll para links de nav
                 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                     anchor.addEventListener('click', function (e) {
+                        const target = document.getElementById(this.hash.slice(1));
+                        if (!target) return;
                         e.preventDefault();
-                        document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+                        target.scrollIntoView({ behavior: 'smooth' });
                     });
                 });
             }
@@ -1101,8 +1142,12 @@
         // ==========================================
         const bootstrap = async () => {
             const db = new DatabaseService(); 
-            await db.initializeAuth();
             const app = new SystemInterface(db); 
+            try {
+                await db.initializeAuth();
+            } catch {
+                app.showToast('Conexão inicial indisponível. Você ainda pode navegar pelo catálogo.', 'info');
+            }
         };
 
         if (document.readyState === 'loading') {
