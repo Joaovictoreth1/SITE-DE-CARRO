@@ -46,7 +46,10 @@ jobs:
           docker run --detach --name motornews -p 127.0.0.1:8080:8080 \
             --read-only --tmpfs /tmp --cap-drop=ALL --security-opt=no-new-privileges motornews
           test "$(docker exec motornews id -u)" -ne 0
-          curl --fail --silent --show-error --retry 10 --retry-connrefused -I http://127.0.0.1:8080/
+          curl --fail --silent --show-error --retry 10 --retry-all-errors --retry-max-time 30 --max-time 5 -I http://127.0.0.1:8080/ || {
+            docker logs motornews
+            exit 1
+          }
           MOTORNEWS_STATIC_URL=http://127.0.0.1:8080 npm run test:browser
       - name: Install the pinned Firebase CLI
         run: |
