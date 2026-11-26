@@ -1,0 +1,236 @@
+@import "@fontsource/bebas-neue/latin-400.css";
+@import "@fontsource/space-mono/latin-400.css";
+@import "@fontsource/space-mono/latin-700.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #020202;
+  color: #e5e5e5;
+  font-family: "Space Mono", monospace;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Brutalist Grid Background */
+.grid-lines {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 6rem 6rem;
+  background-position: center top;
+}
+
+/* Scanline Overlay effect */
+.scanline-overlay::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+    linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 0.06),
+      rgba(0, 255, 0, 0.02),
+      rgba(0, 0, 255, 0.06)
+    );
+  z-index: 100;
+  background-size:
+    100% 2px,
+    3px 100%;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.group:hover .text-outline,
+.text-outline:hover {
+  color: white;
+  -webkit-text-stroke: 0px transparent;
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.sharp-border {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.sharp-border-red {
+  border: 1px solid rgba(255, 30, 30, 0.4);
+  box-shadow: inset 0 0 15px rgba(255, 30, 30, 0.1);
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #020202;
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background: #444;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ff1e1e;
+}
+
+/* Media Container for Video/Poster Fallback */
+.media-container {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background-color: #050505;
+}
+.media-container video,
+.media-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition:
+    transform 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 1s ease;
+  filter: grayscale(100%) brightness(0.4) contrast(1.3);
+}
+.media-container img {
+  z-index: 1;
+}
+.media-container video {
+  z-index: 2;
+}
+.group:hover .media-container video,
+.group:hover .media-container img {
+  transform: scale(1.05);
+  filter: grayscale(0%) brightness(0.8) contrast(1.1);
+}
+
+/* Hover Sweep Button Effect */
+.btn-sweep {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: color 0.3s;
+}
+.btn-sweep::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: -1;
+}
+.btn-sweep.red-sweep::before {
+  background: #ff1e1e;
+}
+.btn-sweep:hover::before {
+  transform: translateX(100%);
+}
+.btn-sweep:hover {
+  color: #000;
+}
+.btn-sweep.red-sweep:hover {
+  color: #fff;
+}
+
+.content-overlay {
+  position: relative;
+  z-index: 10;
+}
+
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0%;
+  height: 1px;
+  background-color: #ff1e1e;
+  transition: width 0.3s ease;
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+
+:root {
+  color-scheme: dark;
+}
+[hidden] {
+  display: none !important;
+}
+:focus-visible {
+  outline: 2px solid #ffb700;
+  outline-offset: 4px;
+}
+main [id] {
+  scroll-margin-top: 8rem;
+}
+dialog::backdrop {
+  background: rgb(0 0 0 / 85%);
+}
+dialog {
+  overscroll-behavior: contain;
+}
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+.media-container video:not(.playing) {
+  visibility: hidden;
+}
+.inline-icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.125em;
+  fill: currentColor;
+}
+.telemetry-meter {
+  display: block;
+  width: 100%;
+  height: 0.375rem;
+  border: 0;
+  appearance: none;
+  color: var(--meter-color);
+  background: #222;
+}
+.telemetry-meter::-webkit-progress-bar {
+  background: #222;
+}
+.telemetry-meter::-webkit-progress-value {
+  background: var(--meter-color);
+}
+.telemetry-meter::-moz-progress-bar {
+  background: var(--meter-color);
+}
+#rpm-bar {
+  --meter-color: #ff1e1e;
+}
+#temp-bar {
+  --meter-color: #ffb700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}

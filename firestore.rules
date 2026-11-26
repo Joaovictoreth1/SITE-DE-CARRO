@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/telemetry/FEV-01 {
+      function isOwner() {
+        return request.auth != null &&
+          request.auth.uid == uid &&
+          request.auth.token.firebase.sign_in_provider == 'password';
+      }
+
+      allow get: if isOwner();
+      allow create: if isOwner() &&
+        request.resource.data.keys().hasAll(['node', 'createdAt']) &&
+        request.resource.data.keys().hasOnly(['node', 'createdAt']) &&
+        request.resource.data.node == 'FEV-01' &&
+        request.resource.data.createdAt == request.time;
+    }
+  }
+}
