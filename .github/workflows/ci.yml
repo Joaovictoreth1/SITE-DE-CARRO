@@ -1,0 +1,67 @@
+name: MotorNews CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: motornews-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: 24
+          cache: npm
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts
+      - name: Format, lint, type-check, and audit
+        run: |
+          npm run format:check
+          npm run lint
+          npm run typecheck
+          npm audit --audit-level=moderate
+      - name: Measure unit coverage
+        run: npm run test:unit
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Test the production container in Chromium
+        run: |
+          docker build -t motornews .
+          docker run --detach --name motornews -p 127.0.0.1:8080:8080 \
+            --read-only --tmpfs /tmp --cap-drop=ALL --security-opt=no-new-privileges motornews
+          test "$(docker exec motornews id -u)" -ne 0
+          curl --fail --silent --show-error --retry 10 --retry-connrefused -I http://127.0.0.1:8080/
+          MOTORNEWS_STATIC_URL=http://127.0.0.1:8080 npm run test:browser
+      - name: Install the pinned Firebase CLI
+        run: |
+          curl --proto '=https' --tlsv1.2 --fail --silent --show-error --location \
+            https://github.com/firebase/firebase-tools/releases/download/v15.37.0/firebase-tools-linux \
+            --output "$RUNNER_TEMP/firebase"
+          echo "f646ce0464f8d501441c88013bcb369c433630951d920afdc8b7023dcce40319  $RUNNER_TEMP/firebase" | sha256sum --check
+          chmod +x "$RUNNER_TEMP/firebase"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+      - name: Test Firebase Auth and Firestore rules
+        run: npm run test:firebase
+      - name: Upload browser evidence
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 14
